@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { View, Text, StyleSheet, Pressable, ScrollView, Alert } from 'react-native';
+import { View, Text, StyleSheet, Pressable, ScrollView, Alert, Platform } from 'react-native';
 import { useRouter } from 'expo-router';
 import * as Haptics from 'expo-haptics';
 import { TOPICS } from '../../constants/topics';
@@ -45,16 +45,24 @@ export default function PreferenceSetupScreen() {
     }
   };
 
+  const showAlert = (title: string, message: string) => {
+    if (Platform.OS === 'web') {
+      window.alert(`${title}\n\n${message}`);
+    } else {
+      Alert.alert(title, message);
+    }
+  };
+
   const handleContinue = async () => {
     if (amplifyTopics.size === 0) {
-      Alert.alert('Selection Required', 'Please select at least one topic to amplify.');
+      showAlert('Selection Required', 'Please select at least one topic to amplify.');
       return;
     }
 
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) {
-        Alert.alert('Error', 'You must be logged in to save preferences.');
+        showAlert('Error', 'You must be logged in to save preferences.');
         return;
       }
 
@@ -78,12 +86,12 @@ export default function PreferenceSetupScreen() {
         .upsert(preferences, { onConflict: 'user_id,topic' });
 
       if (error) {
-        Alert.alert('Error', 'Failed to save preferences. Please try again.');
+        showAlert('Error', 'Failed to save preferences. Please try again.');
         return;
       }
     } catch (e) {
       // Surface unexpected errors (network, etc.) — never silently swallow
-      Alert.alert('Error', 'Something went wrong. Please try again.');
+      showAlert('Error', 'Something went wrong. Please try again.');
       return; // Do NOT navigate on failure
     }
 

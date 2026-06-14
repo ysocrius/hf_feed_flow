@@ -191,12 +191,17 @@ router.get('/history', requireAuth, async (req: AuthRequest, res: Response) => {
       .order('recorded_at', { ascending: false })
       .limit(limit);
 
-    if (error) throw error;
+    if (error) {
+      // Graceful degradation: table may not exist yet or have RLS issues.
+      // Return empty array so frontend shows "not enough data" instead of error.
+      console.warn('Progress history unavailable:', error.message);
+      return res.json([]);
+    }
 
     res.json(history || []);
   } catch (error: any) {
     console.error('Error fetching progress history:', error);
-    res.status(500).json({ error: 'Failed to fetch progress history' });
+    res.json([]); // Graceful degradation — chart shows "not enough data"
   }
 });
 

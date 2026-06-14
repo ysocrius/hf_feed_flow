@@ -7,6 +7,7 @@ import { useAutomation } from '../../hooks/useAutomation';
 import { useActivity } from '../../hooks/useActivity';
 import { useInstagramConnection } from '../../hooks/useInstagramConnection';
 import { getProgressHistory, ProgressHistory } from '../../lib/api';
+import { supabase } from '../../lib/supabase';
 import { SuccessAnimation } from '../../components/SuccessAnimation';
 
 export default function DashboardScreen() {
@@ -17,10 +18,16 @@ export default function DashboardScreen() {
   const [historyLoading, setHistoryLoading] = useState(true);
   const [showSuccess, setShowSuccess] = useState(false);
 
-  // Fetch progress history for trend chart
+  // Fetch progress history for trend chart (auth-guarded)
   useEffect(() => {
     let mounted = true;
     const fetchHistory = async () => {
+      // Guard: only fetch if user is authenticated
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user || !mounted) {
+        if (mounted) setHistoryLoading(false);
+        return;
+      }
       try {
         const data = await getProgressHistory(30); // Last 30 snapshots
         if (mounted) {

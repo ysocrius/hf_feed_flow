@@ -36,7 +36,10 @@ export function useAutomation() {
     const setupRealtime = async () => {
       // Get current user for filtering
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user || cancelled) return;
+      if (!user || cancelled) {
+        if (!cancelled) setLoading(false);
+        return;
+      }
 
       // Fetch initial status
       await fetchStatus();
