@@ -6,6 +6,11 @@
     "preview": {
       "android": {
         "buildType": "apk"
+      },
+      "env": {
+        "EXPO_PUBLIC_SUPABASE_URL": "https://gmfgdapbdczlktqmeflr.supabase.co",
+        "EXPO_PUBLIC_SUPABASE_ANON_KEY": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdtZmdkYXBiZGN6bGt0cW1lZmxyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEzNDc1MjMsImV4cCI6MjA5NjkyMzUyM30.WIZCmWfubjSl_2SsXkGH5YVYQp--RCJs55JWDz5kqgo",
+        "EXPO_PUBLIC_API_URL": "https://feedflow-backend-hsf4.onrender.com"
       }
     },
     "production": {
